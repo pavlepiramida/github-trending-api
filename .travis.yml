@@ -1,20 +1,28 @@
 language: node_js
 cache:
+  yarn: true
   directories:
     - ~/.npm
 notifications:
   email: false
 node_js:
-  - '8'
-before_install:
+  - '12'
+install:
   - yarn global add codecov
-before_script:
-  - yarn validate
-  - yarn clean
-script: yarn rollup:build:prod
-after_success:
-  - codecov
-  - npm run travis-deploy-once "npm run semantic-release"
-branches:
-  only:
-    - master
+  - yarn install
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - yarn validate
+        - codecov
+    - stage: release
+      if: branch = master
+      script:
+        - yarn build
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release

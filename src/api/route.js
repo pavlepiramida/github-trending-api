@@ -1,39 +1,41 @@
-import url from 'url';
-import express from 'express';
-import cache from 'memory-cache';
-import cacheControl from 'express-cache-controller';
-import cors from 'cors';
+const url = require('url');
+const cache = require('memory-cache');
+const cacheControl = require('express-cache-controller');
+const cors = require('cors');
+const { Router } = require('express');
 
-import languages from './languages.json';
-import spokenLanguages from './spoken-languages.json';
+const languages = require('../languages.json');
+const spokenLanguages = require('../spoken-languages.json');
 
-import { fetchRepositories, fetchDevelopers } from './api/fetch';
+const { fetchRepositories, fetchDevelopers } = require('./fetch');
 
-const PORT = process.env.PORT || 8080;
+const router = Router();
 
-const app = express();
-app.use(cors());
-app.use(
+router.use(cors());
+router.use(
   cacheControl({
-    maxAge: 60 * 10,
+    maxAge: 600,
+    sMaxAge: 600,
   })
 );
 
-app.get('/languages', (req, res) => {
+router.get('/languages', (req, res) => {
   res.cacheControl = {
     maxAge: 60 * 60 * 24,
+    sMaxAge: 60 * 60 * 24 * 7,
   };
   res.json(languages);
 });
 
-app.get('/spoken_languages', (req, res) => {
+router.get('/spoken_languages', (req, res) => {
   res.cacheControl = {
     maxAge: 60 * 60 * 24,
+    sMaxAge: 60 * 60 * 24 * 7,
   };
   res.json(spokenLanguages);
 });
 
-app.get('(/|/repositories)', async (req, res) => {
+router.get('(/|/repositories)', async (req, res) => {
   try {
     const parsedUrl = url.parse(req.originalUrl);
     const queryString = parsedUrl.query;
@@ -46,14 +48,16 @@ app.get('(/|/repositories)', async (req, res) => {
     }
 
     const { language, since, spoken_language_code: spokenLanguage } = params;
-    const cacheKey = `repositories::${language || 'nolang'}::${since ||
-      'daily'}::${spokenLanguage || 'nolang'}}`;
+    const cacheKey = `repositories::${language || 'nolang'}::${
+      since || 'daily'
+    }::${spokenLanguage || 'nolang'}}`;
     const cacheKeyPerm = `perm::${cacheKey}`;
     const cached = cache.get(cacheKey);
     const cachedPerm = cache.get(cacheKeyPerm);
 
     res.cacheControl = {
-      maxAge: 120,
+      maxAge: 300,
+      sMaxAge: 600,
     };
 
     if (Boolean(cached) && cached.length > 0) {
@@ -73,7 +77,7 @@ app.get('(/|/repositories)', async (req, res) => {
   }
 });
 
-app.get('/developers', async (req, res) => {
+router.get('/developers', async (req, res) => {
   try {
     const { language, since } = req.query;
     const cacheKey = `developers::${language || 'nolang'}::${since || 'daily'}`;
@@ -82,7 +86,8 @@ app.get('/developers', async (req, res) => {
     const cachedPerm = cache.get(cacheKeyPerm);
 
     res.cacheControl = {
-      maxAge: 120,
+      maxAge: 300,
+      sMaxAge: 600,
     };
 
     if (Boolean(cached) && cached.length > 0) {
@@ -102,19 +107,17 @@ app.get('/developers', async (req, res) => {
   }
 });
 
-app.get('/memsize', (req, res) => {
+router.get('/memsize', (req, res) => {
   res.send(`memsize=${cache.memsize()}`);
 });
 
-app.post('/memclear', (req, res) => {
+router.post('/memclear', (req, res) => {
   cache.clear();
   res.sendStatus(200);
 });
 
-app.use((_, res) => {
+router.use((_, res) => {
   res.sendStatus(404);
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`);
-});
+module.exports = router;

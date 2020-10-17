@@ -1,16 +1,17 @@
 FORMAT: 1A
-HOST: https://github-trending-api.now.sh/
+HOST: https://ghapi.huchen.dev/
 
 # GitHub Trending API
 
 GitHub Trending API is a simple API to fetch trending repositories and developers.
 
-## Repositories [/repositories{?language,since}]
+## Repositories [/repositories{?language,since,spoken_language_code}]
 
 + Parameters
     + language (string, optional) - Programming language
     + since (string, optional) - Trending period: `daily`, `weekly`, `monthly`
         + Default: `daily`
+    + spoken_language_code (string, optional) - Spoken language
 
 ### List Trending Repositories [GET]
 
@@ -20,8 +21,11 @@ GitHub Trending API is a simple API to fetch trending repositories and developer
             {
                 "author": "xingshaocheng",
                 "name": "architect-awesome",
+                "avatar": "https://github.com/xingshaocheng.png",
                 "url": "https://github.com/xingshaocheng/architect-awesome",
                 "description": "后端架构师技术图谱",
+                "language": "Go",
+                "languageColor": "#3572A5",
                 "stars": 7333,
                 "forks": 1546,
                 "currentPeriodStars": 1528,
@@ -36,6 +40,7 @@ GitHub Trending API is a simple API to fetch trending repositories and developer
             {
                 "author": "google",
                 "name": "gvisor",
+                "avatar": "https://github.com/google.png",
                 "url": "https://github.com/google/gvisor",
                 "description": "Container Runtime Sandbox",
                 "language": "Go",
@@ -54,8 +59,11 @@ GitHub Trending API is a simple API to fetch trending repositories and developer
             {
                 "author": "davideuler",
                 "name": "architecture.of.internet-product",
+                "avatar": "https://github.com/davideuler.png",
                 "url": "https://github.com/davideuler/architecture.of.internet-product",
                 "description": "互联网公司技术架构，微信/淘宝/腾讯/阿里/美团点评/百度/微博/Google/Facebook/Amazon/eBay的架构，欢迎PR补充",
+                "language": "Go",
+                "languageColor": "#3572A5",
                 "stars": 2763,
                 "forks": 416,
                 "currentPeriodStars": 1427,
@@ -70,6 +78,7 @@ GitHub Trending API is a simple API to fetch trending repositories and developer
             {
                 "author": "kusti8",
                 "name": "proton-native",
+                "avatar": "https://github.com/kusti8.png",
                 "url": "https://github.com/kusti8/proton-native",
                 "description": "A React environment for cross platform native desktop apps",
                 "language": "JavaScript",
@@ -156,69 +165,46 @@ GitHub Trending API is a simple API to fetch trending repositories and developer
 
 + Response 200 (application/json)
 
-        {
-            "popular": [
-                {
-                    "id": "c++",
-                    "name": "C++"
-                },
-                {
-                    "id": "html",
-                    "name": "HTML"
-                },
-                {
-                    "id": "java",
-                    "name": "Java"
-                },
-                {
-                    "id": "javascript",
-                    "name": "JavaScript"
-                },
-                {
-                    "id": "php",
-                    "name": "PHP"
-                },
-                {
-                    "id": "python",
-                    "name": "Python"
-                },
-                {
-                    "id": "ruby",
-                    "name": "Ruby"
-                }
-            ],
-            "all": [
-                {
-                    "id": "1c-enterprise",
-                    "name": "1C Enterprise"
-                },
-                {
-                    "id": "abap",
-                    "name": "ABAP"
-                },
-                {
-                    "id": "abnf",
-                    "name": "ABNF"
-                },
-                {
-                    "id": "actionscript",
-                    "name": "ActionScript"
-                },
-                {
-                    "id": "ada",
-                    "name": "Ada"
-                },
-                {
-                    "id": "adobe-font-metrics",
-                    "name": "Adobe Font Metrics"
-                },
-                {
-                    "id": "agda",
-                    "name": "Agda"
-                },
-                {
-                    "id": "ags-script",
-                    "name": "AGS Script"
-                }
-            ]
-        }
+        [
+            {
+                "id": "1c-enterprise",
+                "name": "1C Enterprise"
+            },
+            {
+                "id": "abap",
+                "name": "ABAP"
+            },
+            {
+                "id": "abnf",
+                "name": "ABNF"
+            },
+            {
+                "id": "actionscript",
+                "name": "ActionScript"
+            }
+        ]
+
+## Spoken Languages Collection [/spoken_languages]
+
+### List Spoken Languages [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "urlParam": "ab",
+                "name": "Abkhazian"
+            },
+            {
+                "urlParam": "aa",
+                "name": "Afar"
+            },
+            {
+                "urlParam": "af",
+                "name": "Afrikaans"
+            },
+            {
+                "urlParam": "ak",
+                "name": "Akan"
+            },
+        ]

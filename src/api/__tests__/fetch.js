@@ -1,23 +1,9 @@
 import fetch from 'node-fetch';
+import { fetchRepositories, fetchDevelopers } from '../fetch';
 import mockRepositories from '../mockData/repositories';
 import mockDevelopers from '../mockData/developers';
-import {
-  fetchAllLanguages,
-  fetchRepositories,
-  fetchDevelopers,
-} from '../fetch';
 
 jest.mock('node-fetch');
-
-describe('fetchAllLanguages()', () => {
-  fetch.mockReturnValueOnce({
-    text: jest.fn().mockReturnValue(mockRepositories),
-  });
-
-  it('should match snapshot', async () => {
-    await expect(fetchAllLanguages()).resolves.toMatchSnapshot();
-  });
-});
 
 describe('fetchRepositories()', () => {
   fetch.mockReturnValueOnce({
