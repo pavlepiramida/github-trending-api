@@ -34,4 +34,15 @@ export default [
       process.env.NODE_ENV === 'production' && terser(),
     ],
   },
+  {
+    input: 'src/server.js',
+    external,
+    output: [{ file: 'dist/server.js', format: 'cjs' }],
+    plugins: [
+      json(),
+      resolvePlugin,
+      babelPlugin,
+      process.env.NODE_ENV === 'production' && terser(),
+    ],
+  },
 ];
