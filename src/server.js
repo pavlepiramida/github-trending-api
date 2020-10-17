@@ -9,6 +9,7 @@ import spokenLanguages from './spoken-languages.json';
 
 import { fetchRepositories, fetchDevelopers } from './api/fetch';
 
+
 const PORT = process.env.PORT || 8080;
 
 const app = express();
